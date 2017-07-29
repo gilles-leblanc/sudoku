@@ -70,5 +70,157 @@ let sudokuTests =
         fun () ->
             let eightBox = box 7 board                                  
             assertAreEqual [Locked 96; Locked 95; Locked 94; Locked 86; Locked 85; Locked 84; Locked 76; Locked 75; Locked 74] 
-                           eightBox;                                        
+                           eightBox;     
+
+        "contains returns false if there are no duplicates",
+        fun () -> 
+            assertIsFalse (containsDuplicates [1; 2; 3; 4; 5])
+
+        "contains returns true if there are duplicates",
+        fun () ->
+            assertIsTrue (containsDuplicates [1; 2; 3; 1; 4;])
+
+        "boardSolved returns Solved for correctly solved board #1",
+        fun () -> 
+            let board =  
+                array2D [ 
+                    [| Locked 4; Locked 3; Locked 5; Locked 2; Locked 6; Locked 9; Locked 7; Locked 8; Locked 1 |];
+                    [| Locked 6; Locked 8; Locked 2; Locked 5; Locked 7; Locked 1; Locked 4; Locked 9; Locked 3 |];
+                    [| Locked 1; Locked 9; Locked 7; Locked 8; Locked 3; Locked 4; Locked 5; Locked 6; Locked 2 |];
+                    [| Locked 8; Locked 2; Locked 6; Locked 1; Locked 9; Locked 5; Locked 3; Locked 4; Locked 7 |];
+                    [| Locked 3; Locked 7; Locked 4; Locked 6; Locked 8; Locked 2; Locked 9; Locked 1; Locked 5 |];
+                    [| Locked 9; Locked 5; Locked 1; Locked 7; Locked 4; Locked 3; Locked 6; Locked 2; Locked 8 |];
+                    [| Locked 5; Locked 1; Locked 9; Locked 3; Locked 2; Locked 6; Locked 8; Locked 7; Locked 4 |];
+                    [| Locked 2; Locked 4; Locked 8; Locked 9; Locked 5; Locked 7; Locked 1; Locked 3; Locked 6 |];
+                    [| Locked 7; Locked 6; Locked 3; Locked 4; Locked 1; Locked 8; Locked 2; Locked 5; Locked 9 |]
+                ]                                                     
+            assertAreEqual Solved (boardSolved board);            
+
+        "boardSolved returns Solved for correctly solved board #2",
+        fun () -> 
+            let board =  
+                array2D [ 
+                    [| Locked 1; Locked 5; Locked 2; Locked 4; Locked 8; Locked 9; Locked 3; Locked 7; Locked 6 |];
+                    [| Locked 7; Locked 3; Locked 9; Locked 2; Locked 5; Locked 6; Locked 8; Locked 4; Locked 1 |];
+                    [| Locked 4; Locked 6; Locked 8; Locked 3; Locked 7; Locked 1; Locked 2; Locked 9; Locked 5 |];
+                    [| Locked 3; Locked 8; Locked 7; Locked 1; Locked 2; Locked 4; Locked 6; Locked 5; Locked 9 |];
+                    [| Locked 5; Locked 9; Locked 1; Locked 7; Locked 6; Locked 3; Locked 4; Locked 2; Locked 8 |];
+                    [| Locked 2; Locked 4; Locked 6; Locked 8; Locked 9; Locked 5; Locked 7; Locked 1; Locked 3 |];
+                    [| Locked 9; Locked 1; Locked 4; Locked 6; Locked 3; Locked 7; Locked 5; Locked 8; Locked 2 |];
+                    [| Locked 6; Locked 2; Locked 5; Locked 9; Locked 4; Locked 8; Locked 1; Locked 3; Locked 7 |];
+                    [| Locked 8; Locked 7; Locked 3; Locked 5; Locked 1; Locked 2; Locked 9; Locked 6; Locked 4 |]
+                ]                                                     
+            assertAreEqual Solved (boardSolved board);
+
+        "boardSolved returns Solved for correctly solved board #3",
+        fun () -> 
+            let board =  
+                array2D [ 
+                    [| Locked 1; Locked 2; Locked 3; Locked 6; Locked 7; Locked 8; Locked 9; Locked 4; Locked 5 |];
+                    [| Locked 5; Locked 8; Locked 4; Locked 2; Locked 3; Locked 9; Locked 7; Locked 6; Locked 1 |];
+                    [| Locked 9; Locked 6; Locked 7; Locked 1; Locked 4; Locked 5; Locked 3; Locked 2; Locked 8 |];
+                    [| Locked 3; Locked 7; Locked 2; Locked 4; Locked 6; Locked 1; Locked 5; Locked 8; Locked 9 |];
+                    [| Locked 6; Locked 9; Locked 1; Locked 5; Locked 8; Locked 3; Locked 2; Locked 7; Locked 4 |];
+                    [| Locked 4; Locked 5; Locked 8; Locked 7; Locked 9; Locked 2; Locked 6; Locked 1; Locked 3 |];
+                    [| Locked 8; Locked 3; Locked 6; Locked 9; Locked 2; Locked 4; Locked 1; Locked 5; Locked 7 |];
+                    [| Locked 2; Locked 1; Locked 9; Locked 8; Locked 5; Locked 7; Locked 4; Locked 3; Locked 6 |];
+                    [| Locked 7; Locked 4; Locked 5; Locked 3; Locked 1; Locked 6; Locked 8; Locked 9; Locked 2 |]
+                ]                                                     
+            assertAreEqual Solved (boardSolved board);
+
+        "boardSolved returns InvalidSolution when duplicates in one row",
+        fun () -> 
+            let board =  
+                array2D [ 
+                    [| Locked 1; Locked 5; Locked 2; Locked 4; Locked 1; Locked 9; Locked 3; Locked 7; Locked 6 |];
+                    [| Locked 7; Locked 3; Locked 9; Locked 2; Locked 5; Locked 6; Locked 8; Locked 4; Locked 1 |];
+                    [| Locked 4; Locked 6; Locked 8; Locked 3; Locked 7; Locked 1; Locked 2; Locked 9; Locked 5 |];
+                    [| Locked 3; Locked 8; Locked 7; Locked 1; Locked 2; Locked 4; Locked 6; Locked 5; Locked 9 |];
+                    [| Locked 5; Locked 9; Locked 1; Locked 7; Locked 6; Locked 3; Locked 4; Locked 2; Locked 8 |];
+                    [| Locked 2; Locked 4; Locked 6; Locked 8; Locked 9; Locked 5; Locked 7; Locked 1; Locked 3 |];
+                    [| Locked 9; Locked 1; Locked 4; Locked 6; Locked 3; Locked 7; Locked 5; Locked 8; Locked 2 |];
+                    [| Locked 6; Locked 2; Locked 5; Locked 9; Locked 4; Locked 8; Locked 1; Locked 3; Locked 7 |];
+                    [| Locked 8; Locked 7; Locked 3; Locked 5; Locked 1; Locked 2; Locked 9; Locked 6; Locked 4 |]
+                ]                                                     
+            assertAreEqual InvalidSolution (boardSolved board);
+
+        "boardSolved returns InvalidSolution when duplicates in one row #2",
+        fun () -> 
+            let board =  
+                array2D [ 
+                    [| Locked 1; Locked 2; Locked 3; Locked 6; Locked 7; Locked 8; Locked 9; Locked 4; Locked 5 |];
+                    [| Locked 5; Locked 8; Locked 4; Locked 2; Locked 3; Locked 9; Locked 7; Locked 6; Locked 1 |];
+                    [| Locked 9; Locked 6; Locked 7; Locked 1; Locked 4; Locked 5; Locked 3; Locked 2; Locked 8 |];
+                    [| Locked 3; Locked 7; Locked 2; Locked 4; Locked 6; Locked 1; Locked 5; Locked 8; Locked 9 |];
+                    [| Locked 6; Locked 9; Locked 1; Locked 5; Locked 8; Locked 3; Locked 2; Locked 7; Locked 4 |];
+                    [| Locked 4; Locked 5; Locked 8; Locked 7; Locked 9; Locked 2; Locked 6; Locked 1; Locked 3 |];
+                    [| Locked 8; Locked 3; Locked 6; Locked 8; Locked 2; Locked 4; Locked 1; Locked 5; Locked 7 |];
+                    [| Locked 2; Locked 1; Locked 9; Locked 8; Locked 5; Locked 7; Locked 4; Locked 3; Locked 6 |];
+                    [| Locked 7; Locked 4; Locked 5; Locked 3; Locked 1; Locked 6; Locked 8; Locked 9; Locked 2 |]
+                ]                                                     
+            assertAreEqual InvalidSolution (boardSolved board);    
+
+        "boardSolved returns InvalidSolution when duplicates in one column",
+        fun () -> 
+            let board =  
+                array2D [ 
+                    [| Locked 1; Locked 5; Locked 2; Locked 4; Locked 8; Locked 9; Locked 3; Locked 7; Locked 6 |];
+                    [| Locked 7; Locked 3; Locked 9; Locked 2; Locked 5; Locked 6; Locked 8; Locked 4; Locked 1 |];
+                    [| Locked 4; Locked 6; Locked 8; Locked 3; Locked 7; Locked 1; Locked 2; Locked 9; Locked 5 |];
+                    [| Locked 3; Locked 8; Locked 7; Locked 1; Locked 2; Locked 4; Locked 6; Locked 5; Locked 9 |];
+                    [| Locked 5; Locked 9; Locked 1; Locked 7; Locked 6; Locked 3; Locked 4; Locked 2; Locked 8 |];
+                    [| Locked 2; Locked 5; Locked 6; Locked 8; Locked 9; Locked 5; Locked 7; Locked 1; Locked 3 |];
+                    [| Locked 9; Locked 1; Locked 4; Locked 6; Locked 3; Locked 7; Locked 5; Locked 8; Locked 2 |];
+                    [| Locked 6; Locked 2; Locked 5; Locked 9; Locked 4; Locked 8; Locked 1; Locked 3; Locked 7 |];
+                    [| Locked 8; Locked 7; Locked 3; Locked 5; Locked 1; Locked 2; Locked 9; Locked 6; Locked 4 |]
+                ]                                                     
+            assertAreEqual InvalidSolution (boardSolved board);
+
+        "boardSolved returns InvalidSolution for duplicates in one column #2",
+        fun () -> 
+            let board =  
+                array2D [ 
+                    [| Locked 4; Locked 3; Locked 5; Locked 2; Locked 6; Locked 9; Locked 7; Locked 8; Locked 1 |];
+                    [| Locked 6; Locked 8; Locked 2; Locked 5; Locked 7; Locked 1; Locked 4; Locked 9; Locked 3 |];
+                    [| Locked 1; Locked 9; Locked 7; Locked 8; Locked 3; Locked 4; Locked 5; Locked 6; Locked 2 |];
+                    [| Locked 8; Locked 2; Locked 6; Locked 1; Locked 9; Locked 5; Locked 3; Locked 4; Locked 7 |];
+                    [| Locked 3; Locked 7; Locked 4; Locked 6; Locked 8; Locked 2; Locked 9; Locked 1; Locked 9 |];
+                    [| Locked 9; Locked 5; Locked 1; Locked 7; Locked 4; Locked 3; Locked 6; Locked 2; Locked 8 |];
+                    [| Locked 5; Locked 1; Locked 9; Locked 3; Locked 2; Locked 6; Locked 8; Locked 7; Locked 4 |];
+                    [| Locked 2; Locked 4; Locked 8; Locked 9; Locked 5; Locked 7; Locked 1; Locked 3; Locked 6 |];
+                    [| Locked 7; Locked 6; Locked 3; Locked 4; Locked 1; Locked 8; Locked 2; Locked 5; Locked 9 |]
+                ]                                                     
+            assertAreEqual InvalidSolution (boardSolved board);          
+
+        "boardSolved returns InvalidSolution when duplicates in one box",
+        fun () -> 
+            let board =  
+                array2D [ 
+                    [| Locked 1; Locked 5; Locked 2; Locked 4; Locked 8; Locked 9; Locked 3; Locked 7; Locked 6 |];
+                    [| Locked 7; Locked 3; Locked 9; Locked 2; Locked 5; Locked 6; Locked 8; Locked 4; Locked 1 |];
+                    [| Locked 4; Locked 6; Locked 8; Locked 3; Locked 7; Locked 1; Locked 2; Locked 9; Locked 5 |];
+                    [| Locked 3; Locked 8; Locked 7; Locked 1; Locked 2; Locked 4; Locked 6; Locked 5; Locked 9 |];
+                    [| Locked 5; Locked 9; Locked 1; Locked 7; Locked 6; Locked 3; Locked 4; Locked 2; Locked 8 |];
+                    [| Locked 2; Locked 4; Locked 6; Locked 8; Locked 9; Locked 5; Locked 7; Locked 1; Locked 3 |];
+                    [| Locked 9; Locked 1; Locked 4; Locked 6; Locked 3; Locked 7; Locked 5; Locked 4; Locked 2 |];
+                    [| Locked 6; Locked 2; Locked 5; Locked 9; Locked 4; Locked 8; Locked 1; Locked 3; Locked 7 |];
+                    [| Locked 8; Locked 7; Locked 3; Locked 5; Locked 1; Locked 2; Locked 9; Locked 6; Locked 4 |]
+                ]                                                     
+            assertAreEqual InvalidSolution (boardSolved board);
+
+        "boardSolved returns InvalidSolution for multipe duplicates #1",
+        fun () -> 
+            let board =  
+                array2D [ 
+                    [| Locked 1; Locked 5; Locked 2; Locked 4; Locked 8; Locked 9; Locked 3; Locked 7; Locked 6 |];
+                    [| Locked 7; Locked 3; Locked 9; Locked 2; Locked 5; Locked 6; Locked 8; Locked 4; Locked 1 |];
+                    [| Locked 4; Locked 6; Locked 8; Locked 3; Locked 7; Locked 2; Locked 2; Locked 9; Locked 5 |];
+                    [| Locked 3; Locked 8; Locked 7; Locked 3; Locked 2; Locked 4; Locked 6; Locked 5; Locked 9 |];
+                    [| Locked 5; Locked 7; Locked 1; Locked 7; Locked 6; Locked 3; Locked 4; Locked 2; Locked 8 |];
+                    [| Locked 2; Locked 4; Locked 6; Locked 8; Locked 9; Locked 5; Locked 7; Locked 1; Locked 3 |];
+                    [| Locked 8; Locked 1; Locked 4; Locked 6; Locked 3; Locked 7; Locked 5; Locked 4; Locked 2 |];
+                    [| Locked 6; Locked 2; Locked 5; Locked 9; Locked 4; Locked 8; Locked 1; Locked 3; Locked 7 |];
+                    [| Locked 8; Locked 7; Locked 3; Locked 5; Locked 1; Locked 1; Locked 8; Locked 6; Locked 4 |]
+                ]                                                     
+            assertAreEqual InvalidSolution (boardSolved board);
     ]

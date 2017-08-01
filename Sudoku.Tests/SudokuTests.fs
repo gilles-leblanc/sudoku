@@ -1,6 +1,7 @@
 module SudokuTests
 
-open Sudoku
+open Board
+open Solver
 open TestFramework
 
 let board = array2D [ 
@@ -223,4 +224,18 @@ let sudokuTests =
                     [| Locked 8; Locked 7; Locked 3; Locked 5; Locked 1; Locked 1; Locked 8; Locked 6; Locked 4 |]
                 ]                                                     
             assertAreEqual InvalidSolution (boardSolved board);
+
+        "removePossibleEntries will remove entries from the Possible lists which are already locked #1",
+        fun () ->             
+            let possibles = [Locked 1; Possible [1; 2 ;3 ;4 ;5 ;6 ]; Locked 3; Possible [2; 3; 4; 6; 8; 9]]
+            let result = removePossibleEntries possibles
+            assertAreEqual [Locked 1; Possible [2; 4; 5; 6]; Locked 3; Possible [2; 4; 6; 8; 9]] result
+
+        "removePossibleEntries will remove entries from the Possible lists which are already locked #2",
+        fun () ->             
+            let possibles = [Locked 5; Possible [1; 2 ;3 ;4 ;5 ;6 ]; Locked 3; Possible [2; 3; 4; 6; 8; 9]; 
+                             Possible [4; 5; 7; 9]; Locked 6]
+            let result = removePossibleEntries possibles
+            assertAreEqual [Locked 5; Possible [1; 2 ;4]; Locked 3; Possible [2; 4; 8; 9]; Possible [4; 7; 9]; Locked 6] 
+                           result
     ]

@@ -229,7 +229,7 @@ let sudokuTests =
         fun () ->             
             let possibles = [Locked 1; Possible [1; 2 ;3 ;4 ;5 ;6 ]; Locked 3; Possible [2; 3; 4; 6; 8; 9]]
             let result = removePossibleEntries possibles
-            assertAreEqual [Locked 1; Possible [2; 4; 5; 6]; Locked 3; Possible [2; 4; 6; 8; 9]] result
+            assertAreEqual [Locked 1; Possible [2; 4; 5; 6]; Locked 3; Possible [2; 4; 6; 8; 9]] result;
 
         "removePossibleEntries will remove entries from the Possible lists which are already locked #2",
         fun () ->             
@@ -237,5 +237,20 @@ let sudokuTests =
                              Possible [4; 5; 7; 9]; Locked 6]
             let result = removePossibleEntries possibles
             assertAreEqual [Locked 5; Possible [1; 2 ;4]; Locked 3; Possible [2; 4; 8; 9]; Possible [4; 7; 9]; Locked 6] 
-                           result
+                           result;
+
+        "lockSingleValues will lock out single values",
+        fun () ->
+            let possibles = [Locked 5; Possible [1; 2 ;3 ;4 ;5 ;6 ]; Locked 3; Possible [2; 3; 4; 6; 8; 9]; 
+                             Possible [4]; Possible [6]]
+            let result = lockSingleValues possibles           
+            assertAreEqual  [Locked 5; Possible [1; 2 ;3 ;4 ;5 ;6 ]; Locked 3; Possible [2; 3; 4; 6; 8; 9]; 
+                             Locked 4; Locked 6]               
+                            result;
+
+        "test recreate array from list of lists",
+        fun () ->
+            let newRows = [0..8] |> List.map (fun i -> row i board |> removePossibleEntries |> lockSingleValues)
+            let x = Array2D.init 9 9 (fun i j -> newRows.[i].[8-j] )
+            assertAreEqual board x;
     ]

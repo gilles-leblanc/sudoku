@@ -28,15 +28,10 @@ let lockSingleValues (values:Value list) =
                                  | Locked v -> Locked v)
 
 let removeAndLock (board:Value[,]) = 
-    let newRows = [0..8] |> List.map (fun i -> row i board |> removePossibleEntries |> lockSingleValues)
-    let newBoard = Array2D.init 9 9 (fun i j -> newRows.[i].[8-j] )
-    
-    let newCols = [0..8] |> List.map (fun i -> column i board |> removePossibleEntries |> lockSingleValues)
-    let newBoard' = Array2D.init 9 9 (fun i j -> newCols.[i].[8-j] )
+    let perform func dest =
+        [0..8] |> List.map (fun i -> func i dest |> removePossibleEntries |> lockSingleValues)
 
-    let newBox = [0..8] |> List.map (fun i -> box i board |> removePossibleEntries |> lockSingleValues)
-    Array2D.init 9 9 (fun i j -> newBox.[i].[8-j] )
+    let newBoard (items:Value list list) =
+        Array2D.init 9 9 (fun i j -> items.[i].[8-j] )
 
-    // let newBoard' = array2D [ [0..8] |> List.map (fun i -> column i newBoard |> removePossibleEntries |> lockSingleValues) ]
-    // array2D [ [0..8] |> List.map (fun i -> box i newBoard' |> removePossibleEntries |> lockSingleValues) ]       
-    
+    perform row board |> newBoard |> perform column |> newBoard |> perform box |> newBoard    

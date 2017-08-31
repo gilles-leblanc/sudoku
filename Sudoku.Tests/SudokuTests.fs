@@ -239,6 +239,14 @@ let sudokuTests =
             assertAreEqual [Locked 5; Possible [1; 2 ;4]; Locked 3; Possible [2; 4; 8; 9]; Possible [4; 7; 9]; Locked 6] 
                            result;
 
+        "removePossibleEntries will not remove entries when none are to be removed",
+        fun () ->             
+            let possibles = [Locked 5; Possible [1; 2 ;4 ]; Locked 3; Possible [2; 4; 8; 9]; 
+                             Possible [4; 7; 9]; Locked 6]
+            let result = removePossibleEntries possibles
+            assertAreEqual [Locked 5; Possible [1; 2 ;4]; Locked 3; Possible [2; 4; 8; 9]; Possible [4; 7; 9]; Locked 6] 
+                           result;
+
         "lockSingleValues will lock out single values",
         fun () ->
             let possibles = [Locked 5; Possible [1; 2 ;3 ;4 ;5 ;6 ]; Locked 3; Possible [2; 3; 4; 6; 8; 9]; 
@@ -248,9 +256,43 @@ let sudokuTests =
                              Locked 4; Locked 6]               
                             result;
 
-        "test recreate array from list of lists",
-        fun () ->
-            let newRows = [0..8] |> List.map (fun i -> row i board |> removePossibleEntries |> lockSingleValues)
-            let x = Array2D.init 9 9 (fun i j -> newRows.[i].[8-j] )
-            assertAreEqual board x;
+        // "test recreate array from list of lists",
+        // fun () ->
+        //     let newRows = [0..8] |> List.map (fun i -> row i board |> removePossibleEntries |> lockSingleValues)
+        //     let x = Array2D.init 9 9 (fun i j -> newRows.[8-i].[8-j] )
+        //     board
+
+        "removeAndLock will return the board in the same order",    // my original implementation reversed it causing
+        fun () ->                                                   // all sorts of nasties
+            let result = removeAndLock board
+            assertAreEqual board result
+        // "easy board that can be solved without depth search",
+        // fun () ->
+        //     let allNumbers = [1; 2; 3; 4; 5; 6; 7; 8; 9]
+        //     let board =  
+        //         array2D [ 
+        //             [| Possible allNumbers ; Possible allNumbers; Locked 3; Possible allNumbers; Locked 2; Possible allNumbers; Locked 6; Possible allNumbers; Possible allNumbers |];
+        //             [| Locked 9; Possible allNumbers; Possible allNumbers; Locked 3; Possible allNumbers; Locked 5; Possible allNumbers; Possible allNumbers; Locked 1 |];
+        //             [| Possible allNumbers; Possible allNumbers; Locked 1; Locked 8; Possible allNumbers; Locked 6; Locked 4; Possible allNumbers; Possible allNumbers |];
+        //             [| Possible allNumbers; Possible allNumbers; Locked 8; Locked 1; Possible allNumbers; Locked 2; Locked 9; Possible allNumbers; Possible allNumbers |];
+        //             [| Locked 7; Possible allNumbers; Possible allNumbers; Possible allNumbers; Possible allNumbers; Possible allNumbers; Possible allNumbers; Possible allNumbers; Locked 8 |];
+        //             [| Possible allNumbers; Possible allNumbers; Locked 6; Locked 7; Possible allNumbers; Locked 8; Locked 2; Possible allNumbers; Possible allNumbers |];
+        //             [| Possible allNumbers; Possible allNumbers; Locked 2; Locked 6; Possible allNumbers; Locked 9; Locked 5; Possible allNumbers; Possible allNumbers |];
+        //             [| Locked 8; Possible allNumbers; Possible allNumbers; Locked 2; Possible allNumbers; Locked 3; Possible allNumbers; Possible allNumbers; Locked 9 |];
+        //             [| Possible allNumbers; Possible allNumbers; Locked 5; Possible allNumbers; Locked 1; Possible allNumbers; Locked 3; Possible allNumbers; Possible allNumbers |]
+        //         ] 
+        //     let solved = solve board
+        //     let solution = 
+        //         array2D [ 
+        //                 [| Locked 4 ; Locked 8; Locked 3; Locked 9; Locked 2; Locked 1; Locked 6; Locked 6; Locked 7 |];
+        //                 [| Locked 9; Locked 6; Locked 7; Locked 3; Locked 4; Locked 5; Locked 8; Locked 2; Locked 1 |];
+        //                 [| Locked 2; Locked 5; Locked 1; Locked 8; Locked 7; Locked 6; Locked 4; Locked 9; Locked 3 |];
+        //                 [| Locked 5; Locked 4; Locked 8; Locked 1; Locked 3; Locked 2; Locked 9; Locked 7; Locked 6 |];
+        //                 [| Locked 7; Locked 2; Locked 9; Locked 5; Locked 6; Locked 4; Locked 1; Locked 3; Locked 8 |];
+        //                 [| Locked 1; Locked 3; Locked 6; Locked 7; Locked 9; Locked 8; Locked 2; Locked 4; Locked 5 |];
+        //                 [| Locked 3; Locked 7; Locked 2; Locked 6; Locked 8; Locked 9; Locked 5; Locked 1; Locked 4 |];
+        //                 [| Locked 8; Locked 1; Locked 4; Locked 2; Locked 5; Locked 3; Locked 7; Locked 6; Locked 9 |];
+        //                 [| Locked 6; Locked 9; Locked 5; Locked 4; Locked 1; Locked 7; Locked 3; Locked 8; Locked 2 |]
+        //             ] 
+        //     assertAreEqual solved solution;            
     ]

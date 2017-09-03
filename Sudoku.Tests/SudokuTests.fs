@@ -297,7 +297,7 @@ let sudokuTests =
             let solved = solve board
             let solution = 
                 array2D [ 
-                        [| Locked 4 ; Locked 8; Locked 3; Locked 9; Locked 2; Locked 1; Locked 6; Locked 6; Locked 7 |];
+                        [| Locked 4 ; Locked 8; Locked 3; Locked 9; Locked 2; Locked 1; Locked 6; Locked 5; Locked 7 |];
                         [| Locked 9; Locked 6; Locked 7; Locked 3; Locked 4; Locked 5; Locked 8; Locked 2; Locked 1 |];
                         [| Locked 2; Locked 5; Locked 1; Locked 8; Locked 7; Locked 6; Locked 4; Locked 9; Locked 3 |];
                         [| Locked 5; Locked 4; Locked 8; Locked 1; Locked 3; Locked 2; Locked 9; Locked 7; Locked 6 |];

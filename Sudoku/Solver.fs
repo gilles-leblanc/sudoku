@@ -5,7 +5,7 @@ open Board
 // Takes a Value list in parameter and return a new list with all possible wich are duplicates of
 // locked values removed
 let removePossibleEntries (values:Value list) : Value list = 
-    printf "\nremovePossibleEntries entry %A" values
+    // printf "\nremovePossibleEntries entry %A" values
 
     // get locked values
     let locked = values |> List.filter (fun x -> match x with
@@ -23,12 +23,50 @@ let removePossibleEntries (values:Value list) : Value list =
 
 // go over all values and switch List of one possible value to a Locked value
 let lockSingleValues (values:Value list) = 
-    printf "\nlockSingleValues entry %A" values
+    // printf "\nlockSingleValues entry %A" values
     values |> List.map (fun x -> match x with
                                  | Possible [a] -> Locked a
                                  | Possible (head :: tail) -> Possible (head :: tail)
                                  | Possible [] -> failwith "Error this Possible list is empty"
                                  | Locked v -> Locked v)
+
+// when given a list of of lists each created by the application of the row function, convert it back to a board
+let newBoardFromRows (items:Value list list) =
+    Array2D.init 9 9 (fun i j -> items.[i].[8-j])
+
+// when given a list of of lists each created by the application of the column function, convert it back to a board
+let newBoardFromColumns (items:Value list list) =
+    Array2D.init 9 9 (fun i j -> items.[j].[8-i])    
+
+// when given a list of of lists each created by the application of the box function, convert it back to a board
+let newBoardFromBox (items:Value list list) =
+    let unboxed = Array2D.create 9 9 (Locked 0)
+    
+    let si = seq {
+        for h in [0; 3; 6] do yield! seq {
+            for i in 1..3 do yield! seq {
+                for j in 1..3 do yield 0 + h
+                for j in 1..3 do yield 1 + h
+                for j in 1..3 do yield 2 + h
+            }                
+        }
+    }   
+    let sj = seq { 
+        for i in 1..3 do yield! seq { 
+            for j in 1..3 do yield! [0..2]; 
+            for j in 1..3 do yield! [3..5]; 
+            for j in 1..3 do yield! [6..8]; 
+        }
+    } 
+    let sx = seq {
+        for i in 0..8 do yield! seq { 
+            for j in 0..8 do yield i, j
+        }
+    }
+    
+    let coordinates = List.map2 (fun i j -> i, j) (si |> Seq.toList) (sj |> Seq.toList)   
+    List.iter2 (fun (x, y) (i, j) -> Array2D.set unboxed x y (items.[i].[8-j])) (sx |> Seq.toList) coordinates
+    unboxed
 
 // remove and lock values
 // remove = remove elements in lists of possible values. We remove those values which already appear somewhere else in
@@ -38,11 +76,8 @@ let removeAndLock (board:Value[,]) =
     let perform func dest =
         [0..8] |> List.map (fun i -> func i dest |> removePossibleEntries |> lockSingleValues)
 
-    // let newBoard (items:Value list list) =
-    //     Array2D.init 9 9 (fun i j -> items.[i].[8-j] )
-
-    perform row board |> perform column |> perform box
-    // perform row board |> newBoard |> perform column |> newBoard |> perform box |> newBoard    
+    // perform row board |> perform column |> perform box
+    perform row board |> newBoardFromRows |> perform column |> newBoardFromColumns |> perform box |> newBoardFromBox    
 
 let solve (board:Value[,]) = 
     // call removeAndLock, if board has changed call it again in case we are able to remove more possible values
